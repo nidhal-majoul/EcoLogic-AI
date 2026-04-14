@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Energy Monitor</title>
+    <style>
+        body {
+            background-color: #0f172a; /* Dark Blue/Black */
+            color: #f8fafc;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #1e293b;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 350px;
+            border: 1px solid #334155;
+        }
+        h1 { font-size: 1.25rem; color: #94a3b8; margin-bottom: 0.5rem; }
+        #count { font-size: 5rem; font-weight: 800; margin: 1rem 0; color: #38bdf8; }
+        .status-badge {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+        /* CSS Classes for the AI decision */
+        .eco { background-color: #065f46; color: #34d399; }      /* Green theme */
+        .normal { background-color: #991b1b; color: #fca5a5; }   /* Red theme */
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>LIVE OCCUPANCY</h1>
+        <div id="count">0</div>
+        <p style="color: #64748b;">AI PERCEPTRON DECISION</p>
+        <div id="status" class="status-badge eco">INITIALIZING...</div>
+    </div>
+
+    <script>
+        function updateUI() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    // Update the number of people
+                    document.getElementById('count').innerText = data.people;
+                    
+                    // Update the status text and color based on C++ decision
+                    const statusBox = document.getElementById('status');
+                    statusBox.innerText = data.decision;
+
+                    if (data.decision === "ECO-MODE") {
+                        statusBox.className = "status-badge eco";
+                    } else {
+                        statusBox.className = "status-badge normal";
+                    }
+                })
+                .catch(err => console.error("Communication error with Backend"));
+        }
+        // Sync with server every 1000ms (1 second)
+        setInterval(updateUI, 1000);
+    </script>
+</body>
+</html>
