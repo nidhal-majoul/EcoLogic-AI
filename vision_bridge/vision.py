@@ -1,7 +1,7 @@
 import cv2
 import socket
 import threading
-import requests  # New: for ESP32 communication
+import requests  
 from flask import Flask, jsonify, render_template
 from ultralytics import YOLO
 
