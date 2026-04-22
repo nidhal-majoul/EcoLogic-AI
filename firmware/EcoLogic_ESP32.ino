@@ -1,51 +1,68 @@
 #include <WiFi.h>
+#include <WebServer.h>
 
-const char* ssid = "YOUR WIFI"; 
-const char* password = "YOUR_PASSWORD"; 
+// NETWORK CREDENTIALS 
+// These must match your WIFI settings
+const char* ssid = "YOUR WIFI";     
+const char* password = "YOUR PASSWORD";   
 
-WiFiServer server(80);
-const int LED_PIN = 2; 
+// HARDWARE CONFIGURATION
+// Pin 48 is the built-in RGB LED on most ESP32-S3 DevKits.
+#define MY_LED 48 
+
+// Initialize the web server on port 80 (standard HTTP port)
+WebServer server(80);
+
+/**
+ * Handle "ECO" requests from Python.*/
+void handleEco() {
+  digitalWrite(MY_LED, HIGH); // Turn LED ON (Physical signal for Eco Mode)
+  server.send(200, "text/plain", "ECO MODE ACTIVE");
+  Serial.println(">>> HTTP Command Received: Switching to ECO MODE");
+}
+
+/**
+ * Handle "NORMAL" requests from Python.
+ */
+void handleNormal() {
+  digitalWrite(MY_LED, LOW); // Turn LED OFF (Physical signal for Normal Mode)
+  server.send(200, "text/plain", "NORMAL MODE ACTIVE");
+  Serial.println(">>> HTTP Command Received: Switching to NORMAL MODE");
+}
 
 void setup() {
+  // Start serial communication for debugging
   Serial.begin(115200);
-  pinMode(LED_PIN, OUTPUT);
+  
+  // Set the LED pin as an output
+  pinMode(MY_LED, OUTPUT);
 
+  //WIFI CONNECTION 
+  Serial.print("Connecting to WiFi");
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) { delay(500); Serial.print("."); }
+  
+  // Wait until connected
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
 
-  Serial.println("\nConnected!");
-  Serial.print("IP: "); Serial.println(WiFi.localIP());
+  // Display the IP address
+  Serial.println("\n[SUCCESS] WiFi Connected!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  //SERVER ROUTING 
+  // Link the URL paths to the functions defined above
+  server.on("/ECO", handleEco);
+  server.on("/NORMAL", handleNormal);
+
+  // Start the server
   server.begin();
+  Serial.println("HTTP Server Started. Ready for AI commands.");
 }
 
 void loop() {
-  WiFiClient client = server.available();
-  if (client) {
-    String req = client.readStringUntil('\r');
-    if (req.indexOf("/ECO") != -1) {
-      digitalWrite(LED_PIN, HIGH);
-      Serial.println("Hardware: ECO ON");
-    } else if (req.indexOf("/NORMAL") != -1) {
-      digitalWrite(LED_PIN, LOW);
-      Serial.println("Hardware: NORMAL MODE");
-    }
-    client.stop();
-  }
-}
-
-void loop() {
-  WiFiClient client = server.available();
-  if (client) {
-    String request = client.readStringUntil('\r');
-    
-    if (request.indexOf("GET /ECO") >= 0) {
-      digitalWrite(INTERNAL_LED, HIGH); // Light ON
-      Serial.println("Mode: ECO - LED ON");
-    } 
-    else if (request.indexOf("GET /NORMAL") >= 0) {
-      digitalWrite(INTERNAL_LED, LOW);  // Light OFF
-      Serial.println("Mode: NORMAL - LED OFF");
-    }
-    client.stop();
-  }
+  // Continuously check for incoming HTTP requests from the Python Vision script
+  server.handleClient();
 }
