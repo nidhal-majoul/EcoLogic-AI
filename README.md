@@ -33,8 +33,7 @@ This project demonstrates **Systems Integration** across three different program
 ## 🎓 Academic Context
 This project was developed during my first year at the **University of Burgos**. My goal was to move beyond classroom theory and explore how different technologies can be integrated to solve real-world sustainability problems.
 
-**Special thanks to my professor,Jaime Andres Rincon Arango**, for providing the inspiration to integrate the web dashboard, the vision system, and the physical hardware component. His guidance was essential in turning this code into a complete functional system.
-
+**Special thanks to my professor Jaime Andres Rincon Arango for encouraging and helping me bring this small the project to life!
 ---
 
 ## 🚀 How to Run
