@@ -3,73 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Energy Monitor</title>
+    <title>EcoLogic Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #0f172a; 
+            background: #020617;
             color: #f8fafc;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: radial-gradient(circle at 0% 0%, rgba(30, 58, 138, 0.15) 0%, transparent 50%);
+            min-height: 100vh;
         }
-        .container {
-            background-color: #1e293b;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 350px;
-            border: 1px solid #334155;
+        .box {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
         }
-        h1 { font-size: 1.25rem; color: #94a3b8; margin-bottom: 0.5rem; }
-        #count { font-size: 5rem; font-weight: 800; margin: 1rem 0; color: #38bdf8; }
-        .status-badge {
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: all 0.3s ease;
+        /* Scanner Animation */
+        .box::after {
+            content: "";
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.04), transparent);
+            animation: scan 4s linear infinite;
         }
-        /* CSS Classes for the AI decision */
-        .eco { background-color: #065f46; color: #34d399; }      /* Green theme */
-        .normal { background-color: #991b1b; color: #fca5a5; }   /* Red theme */
+        @keyframes scan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+        .red { color: #8e181b; }
     </style>
 </head>
-<body>
+<body class="p-6 md:p-12">
 
-    <div class="container">
-        <h1>LIVE OCCUPANCY</h1>
-        <div id="count">0</div>
-        <p style="color: #64748b;">AI PERCEPTRON DECISION</p>
-        <div id="status" class="status-badge eco">INITIALIZING...</div>
-    </div>
+    <nav class="max-w-6xl mx-auto flex justify-between items-end mb-12">
+        <div>
+            <h1 class="text-2xl font-black tracking-tighter italic uppercase">ECO<span class="text-emerald-500">LOGIC</span> AI</h1>
+            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Smart Management System</p>
+        </div>
+        <div class="text-right border-l border-slate-800 pl-4">
+            <div id="clock" class="text-xs font-mono text-slate-500 mb-1">00:00:00</div>
+            <div class="text-lg font-black uppercase tracking-tighter">Univ. <span class="red">Burgos</span></div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        <div class="md:col-span-8 box p-10 flex flex-col justify-between min-h-[420px]">
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-slate-400 font-bold text-xs uppercase tracking-widest">Visual Recognition</h2>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
+                        <span class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">Active Feed</span>
+                    </div>
+                </div>
+                <div class="flex items-baseline gap-6">
+                    <span id="num" class="text-white text-[11rem] font-black italic leading-[0.8]">0</span>
+                    <div class="flex flex-col">
+                        <span class="text-slate-500 text-2xl font-light italic">persons</span>
+                        <span class="text-slate-600 text-[10px] font-bold uppercase">detected</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-full relative z-10">
+                <div class="flex justify-between text-[10px] text-slate-400 mb-2 font-mono tracking-widest">
+                    <span>YOLOv8N CORE</span>
+                    <span id="pct">0% LOAD</span>
+                </div>
+                <div class="h-1 bg-slate-900 rounded-full overflow-hidden">
+                    <div id="bar" class="h-full bg-emerald-500 transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:col-span-4 flex flex-col gap-6">
+            <div id="card" class="box p-8 flex-1 flex flex-col items-center justify-center text-center border-b-4 border-slate-800">
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Internal Logic</span>
+                <div id="txt" class="text-2xl font-black italic tracking-tighter uppercase">Initializing</div>
+                <div id="dot" class="mt-4 w-3 h-3 rounded-full bg-slate-700"></div>
+            </div>
+
+            <div class="box p-6">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase mb-4 tracking-widest">System Health</h3>
+                <div class="text-[10px] font-mono text-slate-500 space-y-2">
+                    <div class="flex justify-between"><span>TCP Socket:</span> <span class="text-emerald-500 uppercase">Connected</span></div>
+                    <div class="flex justify-between"><span>Inference:</span> <span class="text-white">12.4ms</span></div>
+                    <div class="flex justify-between border-t border-white/5 pt-2">
+                        <span>Hardware:</span> <span class="text-sky-400 font-bold">ESP32 LINK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="max-w-6xl mx-auto mt-16 flex justify-between items-center pt-6 border-t border-slate-900">
+        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">IA INDUSTRIAL SOLUTIONS 2026</p>
+        <p class="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Developed by <span class="text-white">NIDHAL MAJOUL</span></p>
+    </footer>
 
     <script>
-        function updateUI() {
-            fetch('/data')
-                .then(response => response.json())
-                .then(data => {
-                    // Update the number of people
-                    document.getElementById('count').innerText = data.people;
-                    
-                    // Update the status text and color based on C++ decision
-                    const statusBox = document.getElementById('status');
-                    statusBox.innerText = data.decision;
-
-                    if (data.decision === "ECO-MODE") {
-                        statusBox.className = "status-badge eco";
-                    } else {
-                        statusBox.className = "status-badge normal";
-                    }
-                })
-                .catch(err => console.error("Communication error with Backend"));
+        function updateTime() {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
         }
-        // Sync with server every 1000ms (1 second)
-        setInterval(updateUI, 1000);
+        setInterval(updateTime, 1000);
+
+        async function refresh() {
+            try {
+                const res = await fetch('/data');
+                const d = await res.json();
+                
+                const num = document.getElementById('num');
+                const bar = document.getElementById('bar');
+                const card = document.getElementById('card');
+                const txt = document.getElementById('txt');
+                const dot = document.getElementById('dot');
+                const pct = document.getElementById('pct');
+
+                num.innerText = d.people;
+                let p = Math.min((d.people * 25), 100);
+                bar.style.width = p + "%";
+                pct.innerText = p + "% CAPACITY";
+
+                if (d.decision === "ECO-MODE") {
+                    txt.innerText = "ECO-MODE";
+                    txt.className = "text-2xl font-black italic text-emerald-400 tracking-tighter";
+                    card.style.borderColor = "#10b981";
+                    dot.className = "mt-4 w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_20px_#10b981] animate-pulse";
+                } else if (d.decision === "NORMAL MODE") {
+                    txt.innerText = "NORMAL";
+                    txt.className = "text-2xl font-black italic text-sky-400 tracking-tighter";
+                    card.style.borderColor = "#38bdf8";
+                    dot.className = "mt-4 w-3 h-3 rounded-full bg-sky-500 shadow-[0_0_15px_#38bdf8]";
+                } else {
+                    txt.innerText = "OFFLINE";
+                    txt.className = "text-2xl font-black italic text-slate-600 tracking-tighter";
+                    card.style.borderColor = "#1e293b";
+                }
+            } catch (e) {
+                console.log("Waiting for data stream...");
+            }
+        }
+        setInterval(refresh, 800);
     </script>
 </body>
 </html>
