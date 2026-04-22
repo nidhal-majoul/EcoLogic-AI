@@ -27,7 +27,7 @@ This project demonstrates **Systems Integration** across three different program
 ## 📂 Repository Structure
 * `brain_engine/` - Contains the C++ source code for the Perceptron and Socket Server.
 * `vision_bridge/` - Python scripts for YOLOv8 detection and the Socket client.
-* `web_ui/` - HTML and CSS files for the live monitoring dashboard.
+* `web_ui/` - HTML,CSS and JS files for the live monitoring dashboard.
 * `firmware/` - Arduino code for the ESP32-S3 microcontroller.
 
 ## 🎓 Academic Context
